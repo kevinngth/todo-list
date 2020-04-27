@@ -47,6 +47,7 @@ export const TaskList: React.FC<Props> = ({ tasks, setTasks }) => {
         const newTasks = [...tasks];
         const currentEdit = newTasks.find((task) => task.isEditing === true);
         currentEdit && (currentEdit.content = holdingContent);
+        currentEdit && (currentEdit.isEditing = false);
         newTasks[index].isEditing = true;
         setTasks(newTasks);
     };
