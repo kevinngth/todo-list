@@ -1,4 +1,5 @@
 import React from 'react';
+import Task from '../models/Task';
 import { createStyles, makeStyles } from '@material-ui/core/styles';
 import DeleteIcon from '@material-ui/icons/Delete';
 import {
@@ -21,28 +22,20 @@ const useStyles = makeStyles(() =>
 );
 
 type Props = {
-    tasks: string[];
-    setTasks: (tasks: string[]) => void;
+    tasks: Task[];
+    setTasks: (tasks: Task[]) => void;
 };
 
 export const TaskList: React.FC<Props> = ({ tasks, setTasks }) => {
     const classes = useStyles();
-    const [checked, setChecked] = React.useState([0]);
 
-    const handleToggle = (value: number) => () => {
-        const currentIndex = checked.indexOf(value);
-        const newChecked = [...checked];
-
-        if (currentIndex === -1) {
-            newChecked.push(value);
-        } else {
-            newChecked.splice(currentIndex, 1);
-        }
-
-        setChecked(newChecked);
+    const checkTask = (index: number) => () => {
+        const newTasks = [...tasks];
+        newTasks[index].isDone = !newTasks[index].isDone;
+        setTasks(newTasks);
     };
 
-    const handleClick = (index: number) => () => {
+    const deleteTask = (index: number) => () => {
         const newTasks = [...tasks];
         newTasks.splice(index, 1);
         setTasks(newTasks);
@@ -52,13 +45,13 @@ export const TaskList: React.FC<Props> = ({ tasks, setTasks }) => {
         <List className={classes.root}>
             {tasks.map((task, index) => {
                 return (
-                    <ListItem key={index} role={undefined} dense button onClick={handleToggle(index)}>
+                    <ListItem key={index} role={undefined} dense button onClick={checkTask(index)}>
                         <ListItemIcon>
-                            <Checkbox color="primary" edge="start" checked={checked.indexOf(index) !== -1} />
+                            <Checkbox color="primary" edge="start" checked={task.isDone} />
                         </ListItemIcon>
-                        <ListItemText primary={task} />
+                        <ListItemText primary={task.content} />
                         <ListItemSecondaryAction>
-                            <IconButton edge="end" onClick={handleClick(index)}>
+                            <IconButton edge="end" onClick={deleteTask(index)}>
                                 <DeleteIcon />
                             </IconButton>
                         </ListItemSecondaryAction>

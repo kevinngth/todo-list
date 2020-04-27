@@ -1,18 +1,19 @@
 import React from 'react';
 import { TextField, IconButton } from '@material-ui/core';
 import AddIcon from '@material-ui/icons/Add';
+import Task from '../models/Task';
 
 type Props = {
-    tasks: string[];
-    setTasks: (tasks: string[]) => void;
+    tasks: Task[];
+    setTasks: (tasks: Task[]) => void;
 };
 
 export const Form: React.FC<Props> = ({ tasks, setTasks }) => {
     const [task, setTask] = React.useState<string>('');
 
-    const handleClick = (task: string) => () => {
+    const addTask = (task: string) => () => {
         const newTasks = [...tasks];
-        newTasks.push(task);
+        newTasks.push({ content: task, isDone: false });
         setTasks(newTasks);
         setTask('');
     };
@@ -20,7 +21,7 @@ export const Form: React.FC<Props> = ({ tasks, setTasks }) => {
     return (
         <div>
             <TextField label="New Task" value={task} onChange={(e) => setTask(e.target.value)} />
-            <IconButton color="primary" size="medium" onClick={handleClick(task)}>
+            <IconButton color="primary" size="medium" onClick={addTask(task)}>
                 <AddIcon />
             </IconButton>
         </div>
