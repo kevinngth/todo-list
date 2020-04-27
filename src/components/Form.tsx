@@ -13,7 +13,7 @@ export const Form: React.FC<Props> = ({ tasks, setTasks }) => {
 
     const addTask = (task: string) => () => {
         const newTasks = [...tasks];
-        newTasks.push({ content: task, isDone: false });
+        newTasks.push({ content: task, isDone: false, isEditing: false });
         setTasks(newTasks);
         setTask('');
     };

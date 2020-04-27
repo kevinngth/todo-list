@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Task from '../models/Task';
 import { createStyles, makeStyles } from '@material-ui/core/styles';
 import DeleteIcon from '@material-ui/icons/Delete';
+import EditIcon from '@material-ui/icons/Edit';
+import EditOutlinedIcon from '@material-ui/icons/EditOutlined';
 import {
     List,
     ListItem,
@@ -41,15 +43,44 @@ export const TaskList: React.FC<Props> = ({ tasks, setTasks }) => {
         setTasks(newTasks);
     };
 
+    const startEditingTask = (index: number) => () => {
+        const newTasks = [...tasks];
+        newTasks[index].isEditing = true;
+        setTasks(newTasks);
+    };
+
+    const [holdingContent, setHoldingContent] = useState<string>('');
+
+    const endEditingTask = (index: number) => () => {
+        const newTasks = [...tasks];
+        newTasks[index].content = holdingContent;
+        newTasks[index].isEditing = false;
+        setTasks(newTasks);
+    };
+
     return (
         <List className={classes.root}>
             {tasks.map((task, index) => {
                 return (
-                    <ListItem key={index} role={undefined} dense button onClick={checkTask(index)}>
-                        <ListItemIcon>
+                    <ListItem key={index} role={undefined} dense button>
+                        <ListItemIcon onClick={checkTask(index)}>
                             <Checkbox color="primary" edge="start" checked={task.isDone} />
                         </ListItemIcon>
-                        <ListItemText primary={task.content} />
+                        {task.isEditing ? (
+                            <>
+                                <input
+                                    defaultValue={task.content}
+                                    style={{ width: 300 }}
+                                    onChange={(e) => setHoldingContent(e.target.value)}
+                                />
+                                <EditOutlinedIcon onClick={endEditingTask(index)} />
+                            </>
+                        ) : (
+                            <>
+                                <ListItemText primary={task.content} />
+                                <EditIcon onClick={startEditingTask(index)} />
+                            </>
+                        )}
                         <ListItemSecondaryAction>
                             <IconButton edge="end" onClick={deleteTask(index)}>
                                 <DeleteIcon />
